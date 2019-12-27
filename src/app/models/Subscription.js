@@ -5,8 +5,9 @@ class Subscription extends Model {
     super.init(
       {
         title: Sequelize.STRING,
-        duration: Sequelize.NUMBER,
+        duration: Sequelize.INTEGER,
         price: Sequelize.FLOAT,
+        active: Sequelize.BOOLEAN,
       },
       {
         sequelize,

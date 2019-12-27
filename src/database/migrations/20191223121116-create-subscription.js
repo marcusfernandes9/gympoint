@@ -1,19 +1,27 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('substriptions', {
+    return queryInterface.createTable('subscriptions', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      title: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      duration: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       price: {
         type: Sequelize.FLOAT,
         allowNull: false,
+      },
+      active: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -27,6 +35,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('substriptions');
+    return queryInterface.dropTable('subscriptions');
   },
 };
