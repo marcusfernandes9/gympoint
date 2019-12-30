@@ -14,7 +14,7 @@ module.exports = {
         onDelete: 'SET NULL',
         allowNull: true,
       },
-      substription_id: {
+      subscription_id: {
         type: Sequelize.INTEGER,
         references: { model: 'subscriptions', key: 'id' },
         onUpdate: 'CASCADE',

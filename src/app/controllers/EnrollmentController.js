@@ -1,9 +1,11 @@
 import * as Yup from 'yup';
-import { startOfDay, parseISO, isBefore, addMonths, format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { parseISO, isBefore, addMonths } from 'date-fns';
 import Subscription from '../models/Subscription';
 import Enrollment from '../models/Enrollment';
 import Student from '../models/Student';
+
+import NewEnrollmentMail from '../jobs/NewEnrollmentMail';
+import Queue from '../../lib/Queue';
 
 class EnrollmentController {
   async index(req, res) {
@@ -55,6 +57,10 @@ class EnrollmentController {
     // isso pode virar um campo virtual
     const price = subscription.price * subscription.duration;
 
+    /**
+     * Verificar se o aluno já tem matricula ativa no periodo de inscrição
+     */
+
     const enrollment = await Enrollment.create({
       student_id,
       subscription_id,
@@ -63,21 +69,22 @@ class EnrollmentController {
       price,
     });
 
-    /**
-     * Notify student about enrollment
-     */
-    /*
-    const user = await User.findByPk(student_id);
-    const formattedDate = format(
-      startDate,
-      "'dia' dd 'de' MMMM, 'ás' H:mm'h'",
-      {
-        locale: pt,
-      }
+    const { name: studentName, email: studentEmail } = await Student.findByPk(
+      student_id
     );
 
-    // Envio de email
-      */
+    /**
+     * Notify student about enrollment - Send email
+     */
+    await Queue.add(NewEnrollmentMail.key, {
+      studentName,
+      studentEmail,
+      start_date,
+      end_date,
+      subscriptionTitle: subscription.Title,
+      price,
+    });
+
     return res.json(enrollment);
   }
 
