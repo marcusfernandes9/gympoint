@@ -81,7 +81,6 @@ class EnrollmentController {
       studentEmail,
       start_date,
       end_date,
-      subscriptionTitle: subscription.Title,
       price,
     });
 

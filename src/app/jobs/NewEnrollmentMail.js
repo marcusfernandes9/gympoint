@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import Mail from '../../lib/Mail';
 
 class NewEnrollmentMail {
   get key() {
@@ -7,24 +8,25 @@ class NewEnrollmentMail {
   }
 
   async handle({ data }) {
-    const { enrollment } = data;
+    const { studentName, studentEmail, start_date, end_date, price } = data;
 
-    await NewEnrollmentMail.sendMail({
-      to: `${enrollment.student.name} <${enrollment.student.email}>`,
+    await Mail.sendMail({
+      to: `${studentName} <${studentEmail}>`,
       subject: 'Congratulations, you are now enrolled',
       template: 'newEnrollment',
       context: {
-        student: enrollment.student.name,
+        student: studentName,
+        price,
         start_date: format(
-          parseISO(enrollment.start_date),
-          "'Date de início:' dd'/'MM'/'YYYY",
+          parseISO(start_date),
+          "'Date de início:' dd'/'MM'/'yyyy",
           {
             locale: pt,
           }
         ),
         end_date: format(
-          parseISO(enrollment.end_date),
-          "'Date de início:' dd'/'MM'/'YYYY",
+          parseISO(end_date),
+          "'Date de início:' dd'/'MM'/'yyyy",
           {
             locale: pt,
           }
